@@ -8,6 +8,7 @@ public class Grave : MonoBehaviour
     [SerializeField] GameObject Hole;
     [SerializeField] GameObject Ground;
     [SerializeField] GameObject Buried;
+    [SerializeField] GameObject Stone;
 
     [Header("Settings")]
     public GraveState state = GraveState.Hidden;
@@ -70,6 +71,7 @@ public class Grave : MonoBehaviour
         Hole.SetActive(true);
         Ground.SetActive(false);
         Buried.SetActive(false);
+        Stone.SetActive(true);
         state = GraveState.Hole;
     }
 
@@ -79,6 +81,7 @@ public class Grave : MonoBehaviour
         Hole.SetActive(false);
         Ground.SetActive(false);
         Buried.SetActive(true);
+        Stone.SetActive(true);
         state = GraveState.Buried;
     }
 
@@ -88,6 +91,7 @@ public class Grave : MonoBehaviour
         Hole.SetActive(false);
         Ground.SetActive(true);
         Buried.SetActive(false);
+        Stone.SetActive(true);
         state = GraveState.Ground;
     }
 
@@ -97,6 +101,7 @@ public class Grave : MonoBehaviour
         Hole.SetActive(false);
         Ground.SetActive(false);
         Buried.SetActive(false);
+        Stone.SetActive(false);
         state = GraveState.Hidden;
     }
 
