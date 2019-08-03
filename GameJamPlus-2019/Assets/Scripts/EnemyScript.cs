@@ -28,15 +28,15 @@ public class EnemyScript : MonoBehaviour
         get { return state == EnemyState.Carried; }
     }
 
-    public bool xxxx
-    {
-        get; set;
-    }
-
     Vector3 position;
 
     float counter;
     public float stunTime = 10f;
+
+
+    public EnemySpawner spawner;
+
+
 
     void FixedUpdate()
     {

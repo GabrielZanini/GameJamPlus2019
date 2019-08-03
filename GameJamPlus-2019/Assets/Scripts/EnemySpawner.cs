@@ -15,9 +15,21 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] float spawnRandom = 1f;
     [SerializeField] float spawnTimer;
 
+    [Header("Enemys Settings")]
+    [SerializeField] int startEnemys = 2;
+    [SerializeField] int moreEnemys = 2;
+    [SerializeField] int totalEnemys = 0;
+    [SerializeField] int enemyCount = 1;
+
     [Header("Graves Settings")]
     [SerializeField] int startGraves= 3;
-    [SerializeField] int more = 1;
+    [SerializeField] int moreGraves = 1;
+    [SerializeField] int totalGraves = 0;
+    [SerializeField] int gravesCount = 0;
+
+
+    [Header("Enemys")]
+    [SerializeField] List<EnemyScript> alive = new List<EnemyScript>();
 
 
 
@@ -35,15 +47,18 @@ public class EnemySpawner : MonoBehaviour
     // Cronometro para Spawnar um Inimigo
     void Timer()
     {
-        if (spawnTimer > 0f)
+        if (enemyCount > 0)
         {
-            spawnTimer -= Time.deltaTime;
-        }
-        else
-        {
-            TrySpawn();
-            ResetTimer();
-        }
+            if (spawnTimer > 0f)
+            {
+                spawnTimer -= Time.deltaTime;
+            }
+            else
+            {
+                TrySpawn();
+                ResetTimer();
+            }
+        }        
     }
 
     // Reiniciar o Cronometro com um modificador randomico
@@ -86,6 +101,8 @@ public class EnemySpawner : MonoBehaviour
         var enemy = Instantiate(enemyPrefab, ground.transform.position, Quaternion.identity);
         ground.spawn = enemy.GetComponent<EnemyScript>();
         ground.spawn.target = gates.active.transform;
+        ground.spawn.spawner = this;
+        alive.Add(ground.spawn);
         ground.SetHole();
     }
 

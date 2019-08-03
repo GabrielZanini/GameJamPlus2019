@@ -51,7 +51,7 @@ public class PlayerMovement : MonoBehaviour
        
         //chama função de bater
         Hit();
-        Carry();
+        Carry(); 
     }
 
     void FixedUpdate()
@@ -134,14 +134,14 @@ public class PlayerMovement : MonoBehaviour
     // Carregar ou soltar o inimigo
     void Carry()
     {
-        if (Input.GetButtonDown("Carry"))
+        //if (Input.GetButtonDown("Carry"))
         {
-            if (sight.enemy != null && sight.enemy.isStunned == true)
+            if (Input.GetButtonDown("Carry") && sight.enemy != null && sight.enemy.isStunned == true)
             {
                 // Pegar o inimigo caso ele esteja na visão do Jogador e esteja tonto
                 PickUp();
             }
-            else if (enemy != null && enemy.isCarried)
+            else if (Input.GetButtonUp("Carry") && enemy != null && enemy.isCarried)
             {
                 // Largar o inimigo no chão
                 Throw();

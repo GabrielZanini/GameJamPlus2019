@@ -18,7 +18,6 @@ public class Grave : MonoBehaviour
     public EnemyScript spawn = null;
 
 
-
     void Start()
     {
         SetState(state);
@@ -36,12 +35,13 @@ public class Grave : MonoBehaviour
     // Enterrar o Inimigo em cima do buraco
     void BurryEnemy()
     {
-        // Se tiver um inimigo em cima do buraco e ele não tiver sido recente mente spawnado e ele não estiver sendo segurado pelo Jogador
+        // Se tiver um inimigo em cima do buraco e ele não tiver sido recentemente spawnado e ele não estiver sendo segurado pelo Jogador
         if (enemy != null && enemy != spawn && !enemy.isCarried)
         {
+            
             Destroy(enemy.gameObject);
             SetBuried();
-        }
+        } 
     }
 
     // Muda o estado da Lápide para o parametro "s"
@@ -131,6 +131,7 @@ public class Grave : MonoBehaviour
             spawn = null;
         }
     }
+
 }
 
 
