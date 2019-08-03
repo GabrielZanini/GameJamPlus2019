@@ -194,6 +194,7 @@ MonoBehaviour:
   Ground: {fileID: 8784204182170980509}
   Buried: {fileID: 8784204182734792684}
   Stone: {fileID: 8658579834158052366}
+  collider: {fileID: 8784204181712869941}
   state: 3
   enemy: {fileID: 0}
   spawn: {fileID: 0}

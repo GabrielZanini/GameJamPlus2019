@@ -9,6 +9,7 @@ public class Grave : MonoBehaviour
     [SerializeField] GameObject Ground;
     [SerializeField] GameObject Buried;
     [SerializeField] GameObject Stone;
+    [SerializeField] BoxCollider collider;
 
     [Header("Settings")]
     public GraveState state = GraveState.Hidden;
@@ -17,6 +18,10 @@ public class Grave : MonoBehaviour
     public EnemyScript enemy = null;
     public EnemyScript spawn = null;
 
+
+    public Transform StoneTranform {
+        get { return Stone.transform; }
+    }
 
     void Start()
     {
@@ -28,19 +33,17 @@ public class Grave : MonoBehaviour
         // Se for um Buraco Enterrar o Inimigo
         if (state == GraveState.Hole)
         {
-            BurryEnemy();
+            FallEnemy();
         }       
     }
 
-    // Enterrar o Inimigo em cima do buraco
-    void BurryEnemy()
+    // O Inimigo cai dentro do buraco
+    void FallEnemy()
     {
         // Se tiver um inimigo em cima do buraco e ele não tiver sido recentemente spawnado e ele não estiver sendo segurado pelo Jogador
         if (enemy != null && enemy != spawn && !enemy.isCarried)
-        {
-            
-            Destroy(enemy.gameObject);
-            SetBuried();
+        {            
+            SetWithEnemy();
         } 
     }
 
@@ -63,46 +66,63 @@ public class Grave : MonoBehaviour
         {
             SetBuried();
         }
+        else if (s == GraveState.WithEnemy)
+        {
+            SetWithEnemy();
+        }
     }
 
     // Muda o estado da Lápide para um buraco que o Zombie cai
     public void SetHole()
     {
+        DisableObjects();
         Hole.SetActive(true);
-        Ground.SetActive(false);
-        Buried.SetActive(false);
-        Stone.SetActive(true);
         state = GraveState.Hole;
     }
 
     // Muda o estado da Lápide para um pedaço de terra onde o Zombie foi enterrado
     public void SetBuried()
     {
-        Hole.SetActive(false);
-        Ground.SetActive(false);
+        DisableObjects();
         Buried.SetActive(true);
-        Stone.SetActive(true);
         state = GraveState.Buried;
+        Destroy(enemy.gameObject);
+    }
+
+    // Muda o estado da Lápide para um buraco com um Zombie dentro
+    public void SetWithEnemy()
+    {
+        DisableObjects();
+        Hole.SetActive(true);
+        state = GraveState.WithEnemy;
+        enemy.transform.position = transform.position + (Vector3.down * 0.5f);
+        enemy.InTheHole();
     }
 
     // Muda o estado da Lápide para um pedaço de terra onde o Zombie pode ser "Spawnado"
     public void SetGround()
     {
-        Hole.SetActive(false);
+        DisableObjects();
         Ground.SetActive(true);
-        Buried.SetActive(false);
-        Stone.SetActive(true);
         state = GraveState.Ground;
     }
 
     // Muda o estado da Lápide para escondida (Ainda não aparece no jogo)
     public void SetHidden()
     {
+        DisableObjects();
+        collider.enabled = false;
+        state = GraveState.Hidden;
+    }
+
+
+    void DisableObjects()
+    {
         Hole.SetActive(false);
         Ground.SetActive(false);
         Buried.SetActive(false);
         Stone.SetActive(false);
-        state = GraveState.Hidden;
+        collider.enabled = true;
     }
 
     // Verificar se o inimigo entrou do Collider
@@ -138,6 +158,7 @@ public class Grave : MonoBehaviour
 public enum GraveState
 {
     Hole,       // Buraco para enterrar o Zombie
+    WithEnemy,  // Buraco para enterrar o Zombie
     Ground,     // Terra onde o Zombie spawn
     Buried,     // Depois do Zombie ter sido enterrado
     Hidden      // A Lapide ainda não apareceu no campo

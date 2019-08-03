@@ -33,7 +33,7 @@ public class EnemySpawner : MonoBehaviour
 
 
 
-    void Start()
+    void Awake()
     {
         StartGraves();
         ResetTimer();
@@ -119,6 +119,7 @@ public class EnemySpawner : MonoBehaviour
             }            
         }
 
+        // Spawnar as covas do que Zombies nacem
         for (int i=0; i<startGraves; i++)
         {
             int id = ids[Random.Range(0, ids.Count)];

@@ -5,7 +5,9 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField]
-    Transform holder;
+    Transform enemyHolder;
+    [SerializeField]
+    Transform graveHolder;
 
     [SerializeField]
     SightScript sight;
@@ -32,6 +34,7 @@ public class PlayerMovement : MonoBehaviour
     int floorMask;
 
     EnemyScript enemy;
+    GraveStone graveStone;
     
     //float camRayLenght = 100f;
 
@@ -39,8 +42,6 @@ public class PlayerMovement : MonoBehaviour
     {
         //floorMask = LayerMask.GetMask("Floor");
         playerRigidbody = GetComponent<Rigidbody>();
-
-        
     }
 
     private void Update()
@@ -136,35 +137,85 @@ public class PlayerMovement : MonoBehaviour
     {
         //if (Input.GetButtonDown("Carry"))
         {
-            if (Input.GetButtonDown("Carry") && sight.enemy != null && sight.enemy.isStunned == true)
+            if (Input.GetButtonDown("Carry"))
             {
-                // Pegar o inimigo caso ele esteja na visão do Jogador e esteja tonto
-                PickUp();
+                if (sight.enemy != null && sight.enemy.isStunned == true)
+                {
+                    // Pegar o inimigo caso ele esteja na visão do Jogador e esteja tonto
+                    PickUpEnemy();
+                }
+                else if (sight.graveStone != null)
+                {
+                    PickUpGraveStone();
+                }
+                
             }
-            else if (Input.GetButtonUp("Carry") && enemy != null && enemy.isCarried)
+            else if (Input.GetButtonUp("Carry"))
             {
-                // Largar o inimigo no chão
-                Throw();
+                if (enemy != null && enemy.isCarried)
+                {
+                    // Largar o inimigo no chão
+                    ThrowEnemy();
+                }
+                else if (graveStone != null)
+                {
+                    ThrowGraveStone();
+                }
             }
         }        
     }
 
     // Prender o inimigo tonto no jogador na posição do Holder
-    void PickUp()
+    void PickUpEnemy()
     {
         enemy = sight.enemy;
-        enemy.transform.parent = holder.transform;
+        enemy.transform.parent = enemyHolder.transform;
         enemy.transform.localPosition = Vector3.zero;
         enemy.Carried();
         state = PlayerState.Carring;
     }
 
     // Soltar o inimigo no chao
-    void Throw()
+    void ThrowEnemy()
     {
         enemy.transform.parent = null;
         enemy.BackStun();
         enemy = null;
+        state = PlayerState.Normal;
+    }
+
+
+
+    // Prender o inimigo tonto no jogador na posição do Holder
+    void PickUpGraveStone()
+    {
+        graveStone = sight.graveStone;
+        graveStone.transform.parent = graveHolder.transform;
+        graveStone.transform.localPosition = Vector3.zero;
+        graveStone.transform.localRotation = Quaternion.identity;
+        
+        state = PlayerState.Carring;
+    }
+
+    // Soltar o inimigo no chao
+    void ThrowGraveStone()
+    {
+        graveStone.transform.parent = null;
+
+        if (sight.grave != null && sight.grave.state == GraveState.WithEnemy) 
+        {
+            graveStone.transform.position = sight.grave.StoneTranform.position;
+            graveStone.collider.enabled = false;
+            sight.grave.SetBuried();
+        }
+        else
+        {
+            graveStone.transform.position = transform.position + transform.forward;
+        }
+
+        graveStone.transform.rotation = Quaternion.identity;
+        graveStone = null;
+        
         state = PlayerState.Normal;
     }
 }

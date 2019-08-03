@@ -17,21 +17,23 @@ public class EnemyScript : MonoBehaviour
     {
         get { return state == EnemyState.Normal; }
     }
-
     public bool isStunned
     {
         get { return state == EnemyState.Stunned; }
     }
-
-    public bool isCarried
-    {
+    public bool isCarried {
         get { return state == EnemyState.Carried; }
+    }
+    public bool isInTheHole {
+        get { return state == EnemyState.InTheHole; }
     }
 
     Vector3 position;
 
-    float counter;
+    float stunCounter;
+    float holeCounter;
     public float stunTime = 10f;
+    public float holeTime = 5f;
 
 
     public EnemySpawner spawner;
@@ -48,18 +50,39 @@ public class EnemyScript : MonoBehaviour
         }
         else if (state == EnemyState.Stunned) 
         {
-            if(counter > 0)
-            {
-                counter -= Time.fixedDeltaTime;
-            }
-            else
-            {
-                disengage();
-            }
+            StunTimer();
         }
         else if (state == EnemyState.Carried)
         {
             
+        }
+        else if (state == EnemyState.InTheHole)
+        {
+            HoleTimer();
+        }
+    }
+
+    void StunTimer()
+    {
+        if (stunCounter > 0)
+        {
+            stunCounter -= Time.fixedDeltaTime;
+        }
+        else
+        {
+            disengage();
+        }
+    }
+
+    void HoleTimer()
+    {
+        if (holeCounter > 0)
+        {
+            holeCounter -= Time.fixedDeltaTime;
+        }
+        else
+        {
+            disengage();
         }
     }
 
@@ -90,6 +113,10 @@ public class EnemyScript : MonoBehaviour
 
     void disengage()
     {
+        Vector3 position = transform.position;
+        position.y = 0;
+        transform.position = position;
+
         state = EnemyState.Normal;
     }
 
@@ -97,7 +124,13 @@ public class EnemyScript : MonoBehaviour
     {
         //está estunado
         state = EnemyState.Stunned;
-        counter = stunTime;
+        stunCounter = stunTime;
+    }
+
+    public void InTheHole()
+    {
+        state = EnemyState.InTheHole;
+        holeCounter = holeTime;
     }
 
     public void Carried()
@@ -121,5 +154,6 @@ public enum EnemyState
 {
     Normal,
     Stunned,
-    Carried
+    Carried,
+    InTheHole
 }
