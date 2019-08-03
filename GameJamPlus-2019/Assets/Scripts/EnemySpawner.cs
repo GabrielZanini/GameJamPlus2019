@@ -6,7 +6,7 @@ public class EnemySpawner : MonoBehaviour
 {
     [Header("Objects")]
     [SerializeField] GameObject enemyPrefab;
-    [SerializeField] Transform target;
+    [SerializeField] GatesManager gates;
     [Space]
     [SerializeField] List<Grave> graves;
 
@@ -85,7 +85,7 @@ public class EnemySpawner : MonoBehaviour
     {
         var enemy = Instantiate(enemyPrefab, ground.transform.position, Quaternion.identity);
         ground.spawn = enemy.GetComponent<EnemyScript>();
-        ground.spawn.target = target;
+        ground.spawn.target = gates.active.transform;
         ground.SetHole();
     }
 
