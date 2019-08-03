@@ -31,6 +31,9 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private BoxCollider hit;
 
+    
+    public ScoreScript score;
+
     int floorMask;
 
     EnemyScript enemy;
@@ -42,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
     {
         //floorMask = LayerMask.GetMask("Floor");
         playerRigidbody = GetComponent<Rigidbody>();
+        
     }
 
     private void Update()
@@ -148,7 +152,10 @@ public class PlayerMovement : MonoBehaviour
                 {
                     PickUpGraveStone();
                 }
-                
+                else if (sight.graveSpawner != null)
+                {
+                    PickUpNewGrave();
+                }
             }
             else if (Input.GetButtonUp("Carry"))
             {
@@ -173,6 +180,7 @@ public class PlayerMovement : MonoBehaviour
         enemy.transform.localPosition = Vector3.zero;
         enemy.Carried();
         state = PlayerState.Carring;
+        enemy.lastTouch = this;
     }
 
     // Soltar o inimigo no chao
@@ -180,6 +188,8 @@ public class PlayerMovement : MonoBehaviour
     {
         enemy.transform.parent = null;
         enemy.BackStun();
+        enemy.lastTouch = this;
+        //enemy.rigidbody.AddForce(transform.forward * 2);
         enemy = null;
         state = PlayerState.Normal;
     }
@@ -195,6 +205,19 @@ public class PlayerMovement : MonoBehaviour
         graveStone.transform.localRotation = Quaternion.identity;
         
         state = PlayerState.Carring;
+    }
+
+    void PickUpNewGrave()
+    {
+        var newGrave = sight.graveSpawner.Spawn();
+
+        if (newGrave != null)
+        {
+            graveStone = newGrave;
+            graveStone.transform.parent = graveHolder.transform;
+            graveStone.transform.localPosition = Vector3.zero;
+            graveStone.transform.localRotation = Quaternion.identity;
+        }
     }
 
     // Soltar o inimigo no chao
@@ -213,7 +236,7 @@ public class PlayerMovement : MonoBehaviour
             graveStone.transform.position = transform.position + transform.forward;
         }
 
-        graveStone.transform.rotation = Quaternion.identity;
+        graveStone.transform.rotation = Quaternion.identity * Quaternion.Euler(0f,-45f,0f);
         graveStone = null;
         
         state = PlayerState.Normal;

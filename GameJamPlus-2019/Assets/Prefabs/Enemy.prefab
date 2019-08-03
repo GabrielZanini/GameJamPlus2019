@@ -153,7 +153,14 @@ MonoBehaviour:
   target: {fileID: 0}
   speed: 1
   state: 0
+  stunCounter: 0
+  holeCounter: 0
   stunTime: 5
+  holeTime: 5
+  spawner: {fileID: 0}
+  currentGrave: {fileID: 0}
+  lastTouch: {fileID: 0}
+  rigidbody: {fileID: 2256076228088119849}
 --- !u!54 &2256076228088119849
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -168,7 +175,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 84
   m_CollisionDetection: 0
 --- !u!1 &2256076228282573252
 GameObject:

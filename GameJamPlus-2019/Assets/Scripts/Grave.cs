@@ -96,6 +96,7 @@ public class Grave : MonoBehaviour
         Hole.SetActive(true);
         state = GraveState.WithEnemy;
         enemy.transform.position = transform.position + (Vector3.down * 0.5f);
+        enemy.currentGrave = this;
         enemy.InTheHole();
     }
 

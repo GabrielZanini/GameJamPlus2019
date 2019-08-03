@@ -30,15 +30,22 @@ public class EnemyScript : MonoBehaviour
 
     Vector3 position;
 
-    float stunCounter;
-    float holeCounter;
+    public float stunCounter;
+    public float holeCounter;
     public float stunTime = 10f;
     public float holeTime = 5f;
 
 
     public EnemySpawner spawner;
 
+    public Grave currentGrave;
 
+    public PlayerMovement lastTouch;
+
+    public Rigidbody rigidbody;
+
+    bool firstStun = true;
+    bool firstHole = true;
 
     void FixedUpdate()
     {
@@ -60,6 +67,11 @@ public class EnemyScript : MonoBehaviour
         {
             HoleTimer();
         }
+    }
+
+    private void OnDestroy()
+    {
+        lastTouch.score.AddScore(50);
     }
 
     void StunTimer()
@@ -107,6 +119,13 @@ public class EnemyScript : MonoBehaviour
         //se colidir com tag "Hit"
         if ( col.gameObject.tag == "Hit")
         {
+            var player = col.GetComponentInParent<PlayerMovement>();
+
+            if (player != null)
+            {
+                lastTouch = player;
+            }
+
             Stun();
         }
     }
@@ -117,11 +136,31 @@ public class EnemyScript : MonoBehaviour
         position.y = 0;
         transform.position = position;
 
+        if (currentGrave != null)
+        {
+            currentGrave.spawn = this;
+            currentGrave.SetHole();
+            currentGrave = null;
+        }
+        
         state = EnemyState.Normal;
     }
 
     void Stun()
     {
+        if (state != EnemyState.Stunned)
+        {
+            if (firstStun)
+            {
+                lastTouch.score.AddScore(25);
+                firstStun = false;
+            }
+            else
+            {
+                lastTouch.score.AddScore(10);
+            }            
+        }
+
         //está estunado
         state = EnemyState.Stunned;
         stunCounter = stunTime;
@@ -131,6 +170,16 @@ public class EnemyScript : MonoBehaviour
     {
         state = EnemyState.InTheHole;
         holeCounter = holeTime;
+
+        if (firstHole)
+        {
+            lastTouch.score.AddScore(25);
+            firstHole = false;
+        }
+        else
+        {
+            lastTouch.score.AddScore(10);
+        }
     }
 
     public void Carried()
