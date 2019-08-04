@@ -10,6 +10,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] BoxCollider hit;
     public ScoreScript score;
     [SerializeField] GameObject runParticles;
+    public Animator anim;
 
     [SerializeField]
     SightScript sight;
@@ -60,6 +61,7 @@ public class PlayerMovement : MonoBehaviour
     {
         ReadInput();
         ShowParticles();
+        Animate();
         //chama função de bater
         Hit();
         Carry(); 
@@ -92,13 +94,24 @@ public class PlayerMovement : MonoBehaviour
 
     void ShowParticles()
     {
-        if (h != 0f || v != 0f)
+        runParticles.SetActive(h != 0f || v != 0f);
+    }
+
+    void Animate()
+    {
+        anim.SetBool("IsWalking", false);
+
+        if (state == PlayerState.Normal)
         {
-            runParticles.SetActive(true);
+            anim.SetBool("IsWalking", h != 0f || v != 0f);
         }
-        else
+        else if (state == PlayerState.Carring)
         {
-            runParticles.SetActive(false);
+            
+        }
+        else if (state == PlayerState.Stun)
+        {
+            
         }
     }
 
