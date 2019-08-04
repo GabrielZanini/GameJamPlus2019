@@ -176,7 +176,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 1.5, y: 1, z: 1.5}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &8784204181712869943
 MonoBehaviour:
@@ -195,9 +195,14 @@ MonoBehaviour:
   Buried: {fileID: 8784204182734792684}
   Stone: {fileID: 8658579834158052366}
   collider: {fileID: 8784204181712869941}
+  graveStone: {fileID: 0}
   state: 3
+  hasSpawnedEnemy: 0
+  lifetime: 25
+  randomLife: 5
   enemy: {fileID: 0}
   spawn: {fileID: 0}
+  winner: {fileID: 0}
 --- !u!1 &8784204182170980509
 GameObject:
   m_ObjectHideFlags: 0

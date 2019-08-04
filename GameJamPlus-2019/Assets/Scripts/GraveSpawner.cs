@@ -6,7 +6,7 @@ public class GraveSpawner : MonoBehaviour
 {
     [SerializeField] GameObject gravePrefab;
 
-    List<GraveStone> graves = new List<GraveStone>();
+    public List<GraveStone> graves = new List<GraveStone>();
 
 
 
@@ -17,6 +17,7 @@ public class GraveSpawner : MonoBehaviour
 
         if (graveStone != null)
         {
+            graveStone.spawner = this;
             graves.Add(graveStone);
             return graveStone;
         }

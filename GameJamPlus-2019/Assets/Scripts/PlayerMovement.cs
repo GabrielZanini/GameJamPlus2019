@@ -4,22 +4,28 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("References")]
     [SerializeField]
     Transform enemyHolder;
     [SerializeField]
     Transform graveHolder;
+    [SerializeField]
+    private BoxCollider hit;
+    public ScoreScript score;
 
     [SerializeField]
     SightScript sight;
 
     PlayerState state = PlayerState.Normal;
 
+    [Header("Inputs")]
+    public int inputId = 0;
     public float h;
     public float v;
-
     public bool action;
 
     //Handling
+    [Header("Handling")]
     public float speed = 6f;
     public float carrySpeed = 3f;
     public float rotationSpeed = 999f;
@@ -27,12 +33,9 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 movement;
     private Vector3 lookDirection;
     private Rigidbody playerRigidbody;
+    private bool carryDown = false;
+    private bool carryUp = true;
 
-    [SerializeField]
-    private BoxCollider hit;
-
-    
-    public ScoreScript score;
 
     int floorMask;
 
@@ -50,9 +53,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        h = Input.GetAxisRaw("Horizontal");
-        v = Input.GetAxisRaw("Vertical");
-       action = Input.GetButtonDown("Action");
+        ReadInput();
        
         //chama função de bater
         Hit();
@@ -71,6 +72,16 @@ public class PlayerMovement : MonoBehaviour
         Move(h, v);
         //Chama a função que faz o personagem rotacionar
         Turning(h, v);
+    }
+
+    void ReadInput()
+    {
+        h = Input.GetAxisRaw("Horizontal" + inputId);
+        v = Input.GetAxisRaw("Vertical" + inputId);
+        action = Input.GetButtonDown("Action" + inputId);
+
+        carryDown = Input.GetButtonDown("Carry" + inputId);
+        carryUp = Input.GetButtonUp("Carry" + inputId);
     }
 
     void Move( float h, float v)
@@ -141,23 +152,23 @@ public class PlayerMovement : MonoBehaviour
     {
         //if (Input.GetButtonDown("Carry"))
         {
-            if (Input.GetButtonDown("Carry"))
+            if (carryDown)
             {
                 if (sight.enemy != null && sight.enemy.isStunned == true)
                 {
                     // Pegar o inimigo caso ele esteja na visão do Jogador e esteja tonto
                     PickUpEnemy();
                 }
-                else if (sight.graveStone != null)
-                {
-                    PickUpGraveStone();
-                }
+                //else if (sight.graveStone != null )
+                //{
+                //    PickUpGraveStone();
+                //}
                 else if (sight.graveSpawner != null)
                 {
                     PickUpNewGrave();
                 }
             }
-            else if (Input.GetButtonUp("Carry"))
+            else if (carryUp)
             {
                 if (enemy != null && enemy.isCarried)
                 {
@@ -203,7 +214,8 @@ public class PlayerMovement : MonoBehaviour
         graveStone.transform.parent = graveHolder.transform;
         graveStone.transform.localPosition = Vector3.zero;
         graveStone.transform.localRotation = Quaternion.identity;
-        
+        graveStone.state = StoneState.OnPlayer;
+
         state = PlayerState.Carring;
     }
 
@@ -217,6 +229,7 @@ public class PlayerMovement : MonoBehaviour
             graveStone.transform.parent = graveHolder.transform;
             graveStone.transform.localPosition = Vector3.zero;
             graveStone.transform.localRotation = Quaternion.identity;
+            graveStone.state = StoneState.OnPlayer;
         }
     }
 
@@ -225,8 +238,9 @@ public class PlayerMovement : MonoBehaviour
     {
         graveStone.transform.parent = null;
 
-        if (sight.grave != null && sight.grave.state == GraveState.WithEnemy) 
+        if (sight.grave != null && sight.grave.state == GraveState.WithEnemy)
         {
+            graveStone.state = StoneState.OnTheGrave;
             graveStone.transform.position = sight.grave.StoneTranform.position;
             graveStone.collider.enabled = false;
             sight.grave.winner = this;
@@ -235,6 +249,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
+            graveStone.state = StoneState.OnTheGround;
             graveStone.transform.position = transform.position + transform.forward;
         }
 
