@@ -114,7 +114,10 @@ public class Grave : MonoBehaviour
         DisableObjects();
         Buried.SetActive(true);
         state = GraveState.Buried;
-        Destroy(enemy.gameObject);
+        if (enemy != null)
+        {
+            Destroy(enemy.gameObject);
+        }
         lifeTimer = lifetime + Random.Range(-randomLife, randomLife);
     }
 
@@ -135,6 +138,7 @@ public class Grave : MonoBehaviour
         DisableObjects();
         Ground.SetActive(true);
         state = GraveState.Ground;
+        hasSpawnedEnemy = false;
     }
 
     // Muda o estado da Lápide para escondida (Ainda não aparece no jogo)

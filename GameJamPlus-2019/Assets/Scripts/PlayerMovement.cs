@@ -5,13 +5,11 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField]
-    Transform enemyHolder;
-    [SerializeField]
-    Transform graveHolder;
-    [SerializeField]
-    private BoxCollider hit;
+    [SerializeField] Transform enemyHolder;
+    [SerializeField] Transform graveHolder;
+    [SerializeField] BoxCollider hit;
     public ScoreScript score;
+    [SerializeField] GameObject runParticles;
 
     [SerializeField]
     SightScript sight;
@@ -30,6 +28,11 @@ public class PlayerMovement : MonoBehaviour
     public float carrySpeed = 3f;
     public float rotationSpeed = 999f;
 
+    [Header("Stun")]
+    public float stunCounter;
+    public float stunTime = 1.5f;
+
+    //
     private Vector3 movement;
     private Vector3 lookDirection;
     private Rigidbody playerRigidbody;
@@ -48,13 +51,15 @@ public class PlayerMovement : MonoBehaviour
     {
         //floorMask = LayerMask.GetMask("Floor");
         playerRigidbody = GetComponent<Rigidbody>();
-        
+        stunCounter = stunTime;
+
+
     }
 
     private void Update()
     {
         ReadInput();
-       
+        ShowParticles();
         //chama função de bater
         Hit();
         Carry(); 
@@ -62,16 +67,17 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-       
-
-        /*float h2 = Input.GetAxisRaw("Horizontal2");
-        float v2 = Input.GetAxisRaw("Vertical2");
-        */
-
-        //Chama a função que faz o personagem se mover
-        Move(h, v);
-        //Chama a função que faz o personagem rotacionar
-        Turning(h, v);
+        if (state == PlayerState.Normal || state == PlayerState.Carring)
+        {
+            //Chama a função que faz o personagem se mover
+            Move(h, v);
+            //Chama a função que faz o personagem rotacionar
+            Turning(h, v);
+        }
+        else if (state == PlayerState.Stun)
+        {
+            StunTimer();
+        }        
     }
 
     void ReadInput()
@@ -82,6 +88,49 @@ public class PlayerMovement : MonoBehaviour
 
         carryDown = Input.GetButtonDown("Carry" + inputId);
         carryUp = Input.GetButtonUp("Carry" + inputId);
+    }
+
+    void ShowParticles()
+    {
+        if (h != 0f || v != 0f)
+        {
+            runParticles.SetActive(true);
+        }
+        else
+        {
+            runParticles.SetActive(false);
+        }
+    }
+
+    void StunTimer()
+    {
+        if (stunCounter > 0)
+        {
+            stunCounter -= Time.fixedDeltaTime;
+        }
+        else
+        {
+            stunCounter = stunTime;
+            state = PlayerState.Normal;
+        }
+    }
+
+
+    private void OnTriggerEnter(Collider col)
+    {
+        //se colidir com tag "Hit"
+        if (col.gameObject.tag == "Hit")
+        {
+            Debug.Log("Hit");
+
+            var player = col.GetComponentInParent<PlayerMovement>();
+
+            if (player != this)
+            {
+                Debug.Log("player");
+                Stun();
+            }
+        }
     }
 
     void Move( float h, float v)
@@ -147,6 +196,17 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void Stun()
+    {
+        //está estunado
+        
+        // Soltar algo que esteja segurando
+        Throw();
+
+        state = PlayerState.Stun;
+        stunCounter = stunTime;
+    }
+
     // Carregar ou soltar o inimigo
     void Carry()
     {
@@ -154,31 +214,11 @@ public class PlayerMovement : MonoBehaviour
         {
             if (carryDown)
             {
-                if (sight.enemy != null && sight.enemy.isStunned == true)
-                {
-                    // Pegar o inimigo caso ele esteja na visão do Jogador e esteja tonto
-                    PickUpEnemy();
-                }
-                //else if (sight.graveStone != null )
-                //{
-                //    PickUpGraveStone();
-                //}
-                else if (sight.graveSpawner != null)
-                {
-                    PickUpNewGrave();
-                }
+                PickUp();
             }
             else if (carryUp)
             {
-                if (enemy != null && enemy.isCarried)
-                {
-                    // Largar o inimigo no chão
-                    ThrowEnemy();
-                }
-                else if (graveStone != null)
-                {
-                    ThrowGraveStone();
-                }
+                Throw();
             }
         }        
     }
@@ -189,6 +229,7 @@ public class PlayerMovement : MonoBehaviour
         enemy = sight.enemy;
         enemy.transform.parent = enemyHolder.transform;
         enemy.transform.localPosition = Vector3.zero;
+        enemy.currentGrave = null;
         enemy.Carried();
         state = PlayerState.Carring;
         enemy.lastTouch = this;
@@ -204,9 +245,7 @@ public class PlayerMovement : MonoBehaviour
         enemy = null;
         state = PlayerState.Normal;
     }
-
-
-
+    
     // Prender o inimigo tonto no jogador na posição do Holder
     void PickUpGraveStone()
     {
@@ -258,12 +297,43 @@ public class PlayerMovement : MonoBehaviour
         
         state = PlayerState.Normal;
     }
+
+
+    void PickUp()
+    {
+        if (sight.enemy != null && sight.enemy.isStunned == true)
+        {
+            // Pegar o inimigo caso ele esteja na visão do Jogador e esteja tonto
+            PickUpEnemy();
+        }
+        //else if (sight.graveStone != null )
+        //{
+        //    PickUpGraveStone();
+        //}
+        else if (sight.graveSpawner != null)
+        {
+            PickUpNewGrave();
+        }
+    }
+
+    void Throw()
+    {
+        if (enemy != null && enemy.isCarried)
+        {
+            // Largar o inimigo no chão
+            ThrowEnemy();
+        }
+        else if (graveStone != null)
+        {
+            ThrowGraveStone();
+        }
+    }
 }
 
 
 public enum PlayerState
 {
     Normal,
+    Stun,
     Carring,
-    Stairs,
 }

@@ -26,6 +26,8 @@ public class GraveSpawner : MonoBehaviour
         return null;
     }
 
+
+
     public void Clear()
     {
         while (graves.Count > 0)

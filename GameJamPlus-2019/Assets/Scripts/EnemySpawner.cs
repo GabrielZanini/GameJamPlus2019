@@ -18,7 +18,7 @@ public class EnemySpawner : MonoBehaviour
         
     
     [Header("Enemys")]
-    [SerializeField] List<EnemyScript> alive = new List<EnemyScript>();
+    public List<EnemyScript> alive = new List<EnemyScript>();
 
 
 
@@ -89,10 +89,19 @@ public class EnemySpawner : MonoBehaviour
     {
         var enemy = Instantiate(enemyPrefab, ground.transform.position, Quaternion.identity);
         ground.spawn = enemy.GetComponent<EnemyScript>();
+        ground.spawn.originalGrave = ground;
         ground.spawn.target = gates.active.transform;
         ground.spawn.spawner = this;
         alive.Add(ground.spawn);
         ground.SetHole();
     }
-    
+
+
+    public void ChangeTarget()
+    {
+        foreach (var enemy in alive)
+        {
+            enemy.target = gates.active.transform;
+        }
+    }
 }

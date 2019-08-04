@@ -8,6 +8,7 @@ public class SightScript : MonoBehaviour
     public GraveStone graveStone;
     public GraveSpawner graveSpawner;
     public Grave grave;
+    public PlayerMovement player;
 
 
     // Seleciona o inimigo quando Colidir
@@ -40,6 +41,13 @@ public class SightScript : MonoBehaviour
         {
             graveSpawner = gspawn;
         }
+        
+        var p = col.GetComponent<PlayerMovement>();
+
+        if (player != null)
+        {
+            player = p;
+        }
     }
 
     // Remove o inimigo da Seleção quando ele deixar a area de colisão
@@ -71,6 +79,13 @@ public class SightScript : MonoBehaviour
         if (gspawn == graveSpawner)
         {
             graveSpawner = null;
+        }
+
+        var p = col.GetComponent<PlayerMovement>();
+
+        if (p == player)
+        {
+            player = null;
         }
     }
 }

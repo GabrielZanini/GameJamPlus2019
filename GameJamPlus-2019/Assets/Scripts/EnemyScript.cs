@@ -7,19 +7,29 @@ public class EnemyScript : MonoBehaviour
     [Header("Objects")]
     public Transform target;
     public GameObject fire;
+    public EnemySpawner spawner;
+    public Grave currentGrave;
+    public Grave originalGrave;
+    public PlayerMovement lastTouch;
+    public Rigidbody rigidbody;
 
     [Header("Settings")]
     //velocidade do inimigo
     public float speed = 1;
-
     public EnemyState state = EnemyState.Normal;
 
-    public bool isNormal
-    {
+    [Header("Counters")]
+    public float stunCounter;
+    public float holeCounter;
+    public float stunTime = 10f;
+    public float holeTime = 5f;
+    
+
+    // Properties
+    public bool isNormal {
         get { return state == EnemyState.Normal; }
     }
-    public bool isStunned
-    {
+    public bool isStunned {
         get { return state == EnemyState.Stunned; }
     }
     public bool isCarried {
@@ -29,24 +39,12 @@ public class EnemyScript : MonoBehaviour
         get { return state == EnemyState.InTheHole; }
     }
 
+    // Private
     Vector3 position;
-
-    public float stunCounter;
-    public float holeCounter;
-    public float stunTime = 10f;
-    public float holeTime = 5f;
-
-
-    public EnemySpawner spawner;
-
-    public Grave currentGrave;
-
-    public PlayerMovement lastTouch;
-
-    public Rigidbody rigidbody;
-
     bool firstStun = true;
     bool firstHole = true;
+
+
 
     void FixedUpdate()
     {
@@ -76,6 +74,8 @@ public class EnemyScript : MonoBehaviour
         {
             currentGrave.winner.score.AddScore(50);
         }
+
+        spawner.alive.Remove(this);
     }
 
     void StunTimer()
