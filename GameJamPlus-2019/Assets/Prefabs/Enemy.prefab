@@ -153,16 +153,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 0}
   fire: {fileID: 7022424612157376175}
+  spawner: {fileID: 0}
+  currentGrave: {fileID: 0}
+  originalGrave: {fileID: 0}
+  lastTouch: {fileID: 0}
+  rigidbody: {fileID: 2256076228088119849}
+  anim: {fileID: 2844997989925649354}
   speed: 1
   state: 0
   stunCounter: 0
   holeCounter: 0
   stunTime: 5
   holeTime: 5
-  spawner: {fileID: 0}
-  currentGrave: {fileID: 0}
-  lastTouch: {fileID: 0}
-  rigidbody: {fileID: 2256076228088119849}
 --- !u!54 &2256076228088119849
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -256,6 +258,25 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!95 &2844997989925649354
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3233059159099924422}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c8686a14d0922fd46bf4292a6c44a148, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1001 &1420885251178763234
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -487,9 +508,15 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 4290978d80a66d944a1fdbae83c7406b, type: 2}
+      objectReference: {fileID: 2100000, guid: f533125e1a1e2fa458357cb2995ba6b5, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 48047fad41068ad4197dee6f498335b2, type: 3}
+--- !u!1 &3233059159099924422 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -927199367670048503, guid: 48047fad41068ad4197dee6f498335b2,
+    type: 3}
+  m_PrefabInstance: {fileID: 6917475403195352783}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1911069905133743573 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -4216859302048453862, guid: 48047fad41068ad4197dee6f498335b2,

@@ -194,7 +194,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6774938066518067774}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6774938067592418299}
@@ -469,6 +469,7 @@ MonoBehaviour:
   hit: {fileID: 6774938066691791722}
   score: {fileID: 6774938067592418300}
   runParticles: {fileID: 3683908500769682732}
+  anim: {fileID: 4612498734965482427}
   sight: {fileID: 6774938065667742124}
   inputId: 1
   h: 0
@@ -647,8 +648,19 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8167903620135556161, guid: 1204262ac8a5c0040bf82052e2719953,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: d9cb914f962714f4fb97d70f4321366a, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1204262ac8a5c0040bf82052e2719953, type: 3}
+--- !u!95 &4612498734965482427 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 3582531060449458469, guid: 1204262ac8a5c0040bf82052e2719953,
+    type: 3}
+  m_PrefabInstance: {fileID: 8193549852209765022}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3353177213885927105 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6862842364825703519, guid: 1204262ac8a5c0040bf82052e2719953,

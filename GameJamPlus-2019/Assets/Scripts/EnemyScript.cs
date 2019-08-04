@@ -12,6 +12,7 @@ public class EnemyScript : MonoBehaviour
     public Grave originalGrave;
     public PlayerMovement lastTouch;
     public Rigidbody rigidbody;
+    public Animator anim;
 
     [Header("Settings")]
     //velocidade do inimigo
