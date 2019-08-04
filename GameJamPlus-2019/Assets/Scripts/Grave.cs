@@ -10,14 +10,21 @@ public class Grave : MonoBehaviour
     [SerializeField] GameObject Buried;
     [SerializeField] GameObject Stone;
     [SerializeField] BoxCollider collider;
+    public GraveStone graveStone;
 
     [Header("Settings")]
     public GraveState state = GraveState.Hidden;
+    public bool hasSpawnedEnemy = false;
+    public float lifetime = 25f;
+    public float randomLife = 5f;
+    private float lifeTimer;
 
     [Header("Enemy")]
     public EnemyScript enemy = null;
     public EnemyScript spawn = null;
 
+    [Header("Player")]
+    public PlayerMovement winner;
 
     public Transform StoneTranform {
         get { return Stone.transform; }
@@ -34,7 +41,11 @@ public class Grave : MonoBehaviour
         if (state == GraveState.Hole)
         {
             FallEnemy();
-        }       
+        }
+        else if (state == GraveState.Buried)
+        {
+            BuriedTimer();
+        }
     }
 
     // O Inimigo cai dentro do buraco
@@ -46,6 +57,22 @@ public class Grave : MonoBehaviour
             SetWithEnemy();
         } 
     }
+
+
+    void BuriedTimer()
+    {
+        if (lifeTimer > 0f)
+        {
+            lifeTimer -= Time.deltaTime;
+        }
+        else
+        {
+            Destroy(graveStone.gameObject);
+            //Destroy(gameObject);
+            SetHidden();
+        }
+    }
+
 
     // Muda o estado da Lápide para o parametro "s"
     void SetState(GraveState s)
@@ -75,6 +102,7 @@ public class Grave : MonoBehaviour
     // Muda o estado da Lápide para um buraco que o Zombie cai
     public void SetHole()
     {
+        hasSpawnedEnemy = true;
         DisableObjects();
         Hole.SetActive(true);
         state = GraveState.Hole;
@@ -87,6 +115,7 @@ public class Grave : MonoBehaviour
         Buried.SetActive(true);
         state = GraveState.Buried;
         Destroy(enemy.gameObject);
+        lifeTimer = lifetime + Random.Range(-randomLife, randomLife);
     }
 
     // Muda o estado da Lápide para um buraco com um Zombie dentro

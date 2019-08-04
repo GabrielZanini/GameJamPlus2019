@@ -9,33 +9,25 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] GatesManager gates;
     [Space]
     [SerializeField] List<Grave> graves;
+    List<int> hiddenIds = new List<int>();
 
     [Header("Spawning Settings")]
     [SerializeField] float spawnTime = 5f;
     [SerializeField] float spawnRandom = 1f;
     [SerializeField] float spawnTimer;
-
-    [Header("Enemys Settings")]
-    [SerializeField] int startEnemys = 2;
-    [SerializeField] int moreEnemys = 2;
-    [SerializeField] int totalEnemys = 0;
-    [SerializeField] int enemyCount = 1;
-
-    [Header("Graves Settings")]
-    [SerializeField] int startGraves= 3;
-    [SerializeField] int moreGraves = 1;
-    [SerializeField] int totalGraves = 0;
-    [SerializeField] int gravesCount = 0;
-
-
+        
+    
     [Header("Enemys")]
     [SerializeField] List<EnemyScript> alive = new List<EnemyScript>();
 
 
 
+
+
+
+
     void Awake()
     {
-        StartGraves();
         ResetTimer();
     }
         
@@ -47,18 +39,15 @@ public class EnemySpawner : MonoBehaviour
     // Cronometro para Spawnar um Inimigo
     void Timer()
     {
-        if (enemyCount > 0)
+        if (spawnTimer > 0f)
         {
-            if (spawnTimer > 0f)
-            {
-                spawnTimer -= Time.deltaTime;
-            }
-            else
-            {
-                TrySpawn();
-                ResetTimer();
-            }
-        }        
+            spawnTimer -= Time.deltaTime;
+        }
+        else
+        {
+            TrySpawn();
+            ResetTimer();
+        }
     }
 
     // Reiniciar o Cronometro com um modificador randomico
@@ -70,23 +59,23 @@ public class EnemySpawner : MonoBehaviour
     // Tentar Spawnar inimigos
     void TrySpawn()
     {
-        List<Grave> grounds = new List<Grave>();
+        List<Grave> notBuried = new List<Grave>();
 
         // Listar as Lapides que podem Spawnar inimigos
         foreach (var g in graves)
         {
-            if (g.state == GraveState.Ground)
+            if (g.state != GraveState.Hidden && g.state != GraveState.Buried && !g.hasSpawnedEnemy)
             {
-                grounds.Add(g);
+                notBuried.Add(g);
             }
         }
 
         // Verificar se existem lapides que podem Spawnar inimigos
-        if (grounds.Count > 0)
+        if (notBuried.Count > 0)
         {
             // Escolhe uma lapide aleatória
-            int index = Random.Range(0, grounds.Count);
-            SpawnEnemy(grounds[index]);
+            int index = Random.Range(0, notBuried.Count);
+            SpawnEnemy(notBuried[index]);
         }
         else
         {
@@ -105,26 +94,5 @@ public class EnemySpawner : MonoBehaviour
         alive.Add(ground.spawn);
         ground.SetHole();
     }
-
     
-    void StartGraves()
-    {
-        List<int> ids = new List<int>();
-
-        for (int i=0; i< graves.Count; i++)
-        {
-            if (graves[i].state == GraveState.Hidden)
-            {
-                ids.Add(i);
-            }            
-        }
-
-        // Spawnar as covas do que Zombies nacem
-        for (int i=0; i<startGraves; i++)
-        {
-            int id = ids[Random.Range(0, ids.Count)];
-            ids.Remove(id);
-            graves[id].SetGround();
-        }
-    }
 }

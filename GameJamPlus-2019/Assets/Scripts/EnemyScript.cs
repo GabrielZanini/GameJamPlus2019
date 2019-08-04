@@ -6,6 +6,7 @@ public class EnemyScript : MonoBehaviour
 {
     [Header("Objects")]
     public Transform target;
+    public GameObject fire;
 
     [Header("Settings")]
     //velocidade do inimigo
@@ -71,7 +72,10 @@ public class EnemyScript : MonoBehaviour
 
     private void OnDestroy()
     {
-        lastTouch.score.AddScore(50);
+        if (currentGrave != null)
+        {
+            currentGrave.winner.score.AddScore(50);
+        }
     }
 
     void StunTimer()
@@ -142,7 +146,8 @@ public class EnemyScript : MonoBehaviour
             currentGrave.SetHole();
             currentGrave = null;
         }
-        
+
+        fire.SetActive(true);
         state = EnemyState.Normal;
     }
 
@@ -164,6 +169,7 @@ public class EnemyScript : MonoBehaviour
         //está estunado
         state = EnemyState.Stunned;
         stunCounter = stunTime;
+        fire.SetActive(false);
     }
 
     public void InTheHole()
@@ -173,8 +179,11 @@ public class EnemyScript : MonoBehaviour
 
         if (firstHole)
         {
-            lastTouch.score.AddScore(25);
-            firstHole = false;
+            if (lastTouch != null)
+            {
+                lastTouch.score.AddScore(25);
+                firstHole = false;
+            }            
         }
         else
         {

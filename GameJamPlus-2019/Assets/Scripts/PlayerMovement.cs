@@ -229,6 +229,8 @@ public class PlayerMovement : MonoBehaviour
         {
             graveStone.transform.position = sight.grave.StoneTranform.position;
             graveStone.collider.enabled = false;
+            sight.grave.winner = this;
+            sight.grave.graveStone = graveStone;
             sight.grave.SetBuried();
         }
         else
