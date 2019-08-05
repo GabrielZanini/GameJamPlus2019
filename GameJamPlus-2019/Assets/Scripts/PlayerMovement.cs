@@ -11,6 +11,7 @@ public class PlayerMovement : MonoBehaviour
     public ScoreScript score;
     [SerializeField] GameObject runParticles;
     public Animator anim;
+    public AudioSource audio;
 
     [SerializeField]
     SightScript sight;
@@ -84,12 +85,24 @@ public class PlayerMovement : MonoBehaviour
 
     void ReadInput()
     {
-        h = Input.GetAxisRaw("Horizontal" + inputId);
-        v = Input.GetAxisRaw("Vertical" + inputId);
-        action = Input.GetButtonDown("Action" + inputId);
+        if (inputId > 0)
+        {
+            h = Input.GetAxisRaw("Horizontal" + inputId);
+            v = Input.GetAxisRaw("Vertical" + inputId);
+            action = Input.GetButtonDown("Action" + inputId);
 
-        carryDown = Input.GetButtonDown("Carry" + inputId);
-        carryUp = Input.GetButtonUp("Carry" + inputId);
+            carryDown = Input.GetButtonDown("Carry" + inputId);
+            carryUp = Input.GetButtonUp("Carry" + inputId);
+        }
+        else
+        {
+            h = Input.GetAxisRaw("Horizontal");
+            v = Input.GetAxisRaw("Vertical");
+            action = Input.GetButtonDown("Action");
+
+            carryDown = Input.GetButtonDown("Carry");
+            carryUp = Input.GetButtonUp("Carry");
+        }
     }
 
     void ShowParticles()
@@ -200,6 +213,7 @@ public class PlayerMovement : MonoBehaviour
         {
             //liga o collider da Pá
             hit.enabled = true;
+            audio.Play();
         }
             
         if (!action)

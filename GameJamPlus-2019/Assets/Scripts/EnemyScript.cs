@@ -119,6 +119,28 @@ public class EnemyScript : MonoBehaviour
     }
 
 
+    void Animate()
+    {
+        anim.SetBool("IsWalking", false);
+
+        if (state == EnemyState.Normal)
+        {
+            
+        }
+        else if (state == EnemyState.Stunned)
+        {
+
+        }
+        else if (state == EnemyState.InTheHole)
+        {
+
+        }
+        else if (state == EnemyState.Carried)
+        {
+
+        }
+    }
+
     private void OnTriggerEnter(Collider col)
     {
         //se colidir com tag "Hit"

@@ -11,6 +11,7 @@ public class Grave : MonoBehaviour
     [SerializeField] GameObject Stone;
     [SerializeField] BoxCollider collider;
     public GraveStone graveStone;
+    public AudioSource audio;
 
     [Header("Settings")]
     public GraveState state = GraveState.Hidden;
@@ -111,6 +112,7 @@ public class Grave : MonoBehaviour
     // Muda o estado da Lápide para um pedaço de terra onde o Zombie foi enterrado
     public void SetBuried()
     {
+        audio.Play();
         DisableObjects();
         Buried.SetActive(true);
         state = GraveState.Buried;
